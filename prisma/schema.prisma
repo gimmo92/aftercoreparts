@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Lead {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  companyName    String
+  privacyConsent Boolean
+  consentAt      DateTime
+  createdAt      DateTime @default(now())
+  searches       Search[]
+}
+
+model Search {
+  id               String    @id @default(cuid())
+  imageHash        String
+  imageUrl         String
+  blobPath         String
+  imageDeletedAt   DateTime?
+  machineBrand     String?
+  machineModel     String?
+  notes            String?
+  ipHash           String
+  leadId           String?
+  lead             Lead?     @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  cacheOfId        String?
+  cacheOf          Search?   @relation("SearchCache", fields: [cacheOfId], references: [id], onDelete: SetNull)
+  cacheHits        Search[]  @relation("SearchCache")
+  componentType    String?
+  brand            String?
+  codes            Json      @default("[]")
+  visibleFeatures  String?
+  suggestedQueries Json      @default("[]")
+  status           String
+  serpApiCalls     Int       @default(0)
+  vlmInputTokens   Int       @default(0)
+  vlmOutputTokens  Int       @default(0)
+  errorMessage     String?
+  createdAt        DateTime  @default(now())
+  results          SearchResult[]
+
+  @@index([imageHash])
+  @@index([ipHash])
+  @@index([createdAt])
+  @@index([leadId, createdAt])
+  @@index([ipHash, leadId])
+}
+
+model SearchResult {
+  id           String  @id @default(cuid())
+  searchId     String
+  search       Search  @relation(fields: [searchId], references: [id], onDelete: Cascade)
+  position     Int
+  title        String
+  url          String
+  source       String?
+  snippet      String?
+  thumbnailUrl String?
+  price        String?
+  confidence   String
+  reason       String
+  sellsPart    Boolean
+  origin       String
+
+  @@index([searchId])
+}
