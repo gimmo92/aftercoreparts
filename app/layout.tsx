@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="it" className={`${sans.variable} ${display.variable} h-full`}>
-      <body className="flex min-h-full flex-col bg-paper text-ink antialiased">
+      <body className="h-dvh overflow-hidden bg-paper text-ink antialiased">
         <SiteChrome>{children}</SiteChrome>
       </body>
     </html>

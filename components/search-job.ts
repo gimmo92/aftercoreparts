@@ -1,7 +1,7 @@
 "use client";
 
 import { upload } from "@vercel/blob/client";
-import { SEARCH_STEPS, type SearchEvent } from "@/lib/search/types";
+import { SEARCH_STEPS, type PublicSearch, type SearchEvent } from "@/lib/search/types";
 
 const FOUR_MB = 4 * 1024 * 1024;
 
@@ -147,6 +147,34 @@ async function readEvents(response: Response, onEvent: (event: SearchEvent) => v
     }
   }
   if (buffer.trim()) onEvent(JSON.parse(buffer) as SearchEvent);
+}
+
+export async function runSearchJob(pending: PendingSearch, onStep?: (label: string) => void) {
+  const image = await fileForUpload(pending.file);
+  const response = await fetch("/api/search", { method: "POST", body: formData(pending, image) });
+  const contentType = response.headers.get("content-type") ?? "";
+  if (contentType.includes("application/json")) {
+    const data = (await response.json()) as { message?: string };
+    throw new Error(data.message || "Ricerca non riuscita.");
+  }
+  if (!response.ok) throw new Error("Ricerca non riuscita.");
+
+  let result: PublicSearch | null = null;
+  let streamError: string | null = null;
+  await readEvents(response, (event) => {
+    if (event.type === "step") {
+      onStep?.(event.label);
+      return;
+    }
+    if (event.type === "error") {
+      streamError = event.message;
+      return;
+    }
+    result = event.data;
+  });
+  if (streamError) throw new Error(streamError);
+  if (!result) throw new Error("Risposta incompleta. Riprova.");
+  return result;
 }
 
 export function startSearch(pending: PendingSearch) {
