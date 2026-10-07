@@ -32,12 +32,14 @@ export default function SearchProgress() {
 
   if (state?.phase === "idle") {
     return (
-      <div className="mx-auto w-full max-w-lg px-4 py-10">
-        <h1 className="font-display text-4xl">Foto non disponibile</h1>
-        <p className="mt-3 leading-6">La foto resta sul telefono solo per questa ricerca. Torna all&apos;inizio e scatta di nuovo.</p>
-        <Link href="/" className="mt-6 inline-flex h-12 items-center rounded-xl bg-orange px-5 font-semibold text-white">
+      <div className="h-full overflow-y-auto">
+      <div className="mx-auto w-full max-w-lg px-6 py-10">
+        <h1 className="text-2xl font-semibold tracking-tight">Foto non disponibile</h1>
+        <p className="mt-3 leading-6 text-muted">La foto resta sul telefono solo per questa ricerca. Torna all&apos;inizio e scatta di nuovo.</p>
+        <Link href="/" className="mt-6 inline-flex h-11 items-center rounded-xl bg-blue px-5 text-sm font-semibold text-white">
           Nuova foto
         </Link>
+      </div>
       </div>
     );
   }
@@ -45,30 +47,32 @@ export default function SearchProgress() {
   const steps = state?.steps ?? pendingSteps;
 
   return (
-    <div className="mx-auto w-full max-w-lg px-4 py-10">
-      <h1 className="font-display text-4xl">Ricerca in corso</h1>
-      <ol className="mt-8 space-y-4">
+    <div className="h-full overflow-y-auto">
+    <div className="mx-auto w-full max-w-lg px-6 py-10">
+      <h1 className="text-2xl font-semibold tracking-tight">Ricerca in corso</h1>
+      <ol className="mt-6 space-y-3">
         {steps.map((step) => (
-          <li key={step.id} className="flex items-center gap-3 rounded-2xl border border-ink/10 bg-card px-4 py-4">
+          <li key={step.id} className="flex items-center gap-3 rounded-2xl border border-line bg-white px-4 py-4">
             <span
-              className={`h-3 w-3 rounded-full ${
-                step.status === "done" ? "bg-emerald-700" : step.status === "active" ? "animate-pulse bg-orange" : "bg-ink/20"
+              className={`h-2.5 w-2.5 rounded-full ${
+                step.status === "done" ? "bg-emerald-600" : step.status === "active" ? "animate-pulse bg-blue" : "bg-line"
               }`}
             />
-            <span className={step.status === "pending" ? "text-ink/50" : "font-medium"}>{step.label}</span>
+            <span className={step.status === "pending" ? "text-muted" : "text-sm font-medium"}>{step.label}</span>
           </li>
         ))}
       </ol>
       {state?.error ? (
-        <div className="mt-6 rounded-2xl border border-orange/40 bg-white px-4 py-4">
+        <div className="mt-6 rounded-2xl border border-red-200 bg-white px-4 py-4 text-sm">
           <p>{state.error}</p>
-          <Link href="/" className="mt-4 inline-flex h-12 items-center font-semibold text-orange">
+          <Link href="/" className="mt-4 inline-flex font-medium text-blue">
             Torna all&apos;inizio
           </Link>
         </div>
       ) : (
-        <p className="mt-6 text-sm text-ink/60">Può volerci fino a un minuto.</p>
+        <p className="mt-6 text-sm text-muted">Può volerci fino a un minuto.</p>
       )}
+    </div>
     </div>
   );
 }

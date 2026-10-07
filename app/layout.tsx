@@ -1,18 +1,11 @@
 import type { Metadata } from "next";
-import { Barlow, Barlow_Condensed } from "next/font/google";
+import { Inter } from "next/font/google";
 import { SiteChrome } from "@/components/site-chrome";
 import "./globals.css";
 
-const sans = Barlow({
+const sans = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
   variable: "--font-sans",
-});
-
-const display = Barlow_Condensed({
-  subsets: ["latin"],
-  weight: ["600", "700"],
-  variable: "--font-display",
 });
 
 export const metadata: Metadata = {
@@ -22,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="it" className={`${sans.variable} ${display.variable} h-full`}>
+    <html lang="it" className={`${sans.variable} h-full`}>
       <body className="h-dvh overflow-hidden bg-paper text-ink antialiased">
         <SiteChrome>{children}</SiteChrome>
       </body>
