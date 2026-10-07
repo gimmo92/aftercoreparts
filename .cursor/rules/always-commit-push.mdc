@@ -1,0 +1,23 @@
+---
+description: After each code change, commit and push to the current branch upstream
+alwaysApply: true
+---
+
+# Always commit and push
+
+After each code change in this repo (Part finder), commit and push to the current branch's upstream without waiting to be asked again.
+
+- Stage only files that belong to the change. Leave secrets out (`.env`, credentials, keys). If one would be committed, warn and do not add it.
+- Message: 1–2 sentences, why the change exists, matching recent `git log` style.
+- Push with `git push`. Add `-u` only when the branch has no upstream.
+- Never force-push. Never skip hooks. Never update git config. Never run destructive git commands unless the user explicitly asks.
+- If there is nothing new to commit but the branch is ahead of the remote, still push.
+- If there is no remote or push fails, report the exact error and stop.
+
+```powershell
+git add -- path/to/changed-files
+git commit -m @"
+Short sentence on why this change exists.
+"@
+git push
+```
